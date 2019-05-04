@@ -34,4 +34,4 @@ yarn.lock
 .buildsettings
 wwwroot
 .DS_Store
-
+publish
