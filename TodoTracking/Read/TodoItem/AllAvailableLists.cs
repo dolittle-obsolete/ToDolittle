@@ -14,6 +14,7 @@ namespace Read.TodoItem
             _repositoryForAvailableLists = repositoryForAvailableLists;
         }
 
+        // Todo:
         public IQueryable<AvailableLists> Query => _repositoryForAvailableLists.Query;
     }
 }
