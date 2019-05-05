@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Concepts.TodoItem;
 using Dolittle.Events.Processing;
 using Dolittle.ReadModels;
@@ -9,9 +10,9 @@ namespace Read.TodoItem
 {
     public class ItemCompletionTimeProcessor : ICanProcessEvents
     {
-        readonly IReadModelRepositoryFor<TaskCompletions> _taskCompletions;
+        readonly IAsyncReadModelRepositoryFor<TaskCompletions> _taskCompletions;
 
-        public ItemCompletionTimeProcessor(IReadModelRepositoryFor<TaskCompletions> taskCompletions)
+        public ItemCompletionTimeProcessor(IAsyncReadModelRepositoryFor<TaskCompletions> taskCompletions)
         {
             _taskCompletions = taskCompletions;
         }
@@ -19,40 +20,46 @@ namespace Read.TodoItem
         [EventProcessor("A1DFE86D-30A8-4926-B054-D4502702B393")]
         public void Process(ItemDone evt)
         {
-            var completions = _taskCompletions.GetById(evt.ListId);
-
-            if (completions == null)
+            Task.Run(async () => 
             {
-                completions = new TaskCompletions
+                var completions = await _taskCompletions.GetById(evt.ListId);
+
+                if (completions == null)
                 {
-                    Id = evt.ListId,
-                    TaskCompletion = new Dictionary<TodoText, DateTime>
+                    completions = new TaskCompletions
                     {
-                        [evt.Text] = DateTime.UtcNow
-                    }
-                };
+                        Id = evt.ListId,
+                        TaskCompletion = new Dictionary<TodoText, DateTime>
+                        {
+                            [evt.Text] = DateTime.UtcNow
+                        }
+                    };
 
-                _taskCompletions.Insert(completions);
-            }
-            else
-            {
-                completions.TaskCompletion[evt.Text] = DateTime.UtcNow;
+                    await _taskCompletions.Insert(completions);
+                }
+                else
+                {
+                    completions.TaskCompletion[evt.Text] = DateTime.UtcNow;
 
-                _taskCompletions.Update(completions);
-            }
+                    await _taskCompletions.Update(completions);
+                }
+            });
         }
 
         [EventProcessor("042DAE97-3E59-4A7C-A995-022C65C21941")]
         public void Process(ItemNotDone evt)
         {
-            var completions = _taskCompletions.GetById(evt.ListId);
-
-            if (completions != null)
+            Task.Run(async () => 
             {
-                completions.TaskCompletion.Remove(evt.Text);
+                var completions = await _taskCompletions.GetById(evt.ListId);
 
-                _taskCompletions.Update(completions);
-            }
+                if (completions != null)
+                {
+                    completions.TaskCompletion.Remove(evt.Text);
+
+                    await _taskCompletions.Update(completions);
+                }
+            });
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Concepts.TodoItem;
 using Dolittle.Events.Processing;
 using Dolittle.ReadModels;
@@ -9,58 +10,64 @@ namespace Read.TodoItem
 {
     public class ItemListProcessor : ICanProcessEvents
     {
-        readonly IReadModelRepositoryFor<AvailableLists> _repositoryForAvailableLists;
+        readonly IAsyncReadModelRepositoryFor<AvailableLists> _repositoryForAvailableLists;
 
         public ItemListProcessor(
-            IReadModelRepositoryFor<AvailableLists> repositoryForAvailableLists            
+            IAsyncReadModelRepositoryFor<AvailableLists> repositoryForAvailableLists
         )
         {
             _repositoryForAvailableLists = repositoryForAvailableLists;
         }
-        
+
         [EventProcessor("eac6222e-1e7e-0fe2-2213-2715c8ebffce")]
         public void Process(ItemCreated evt)
-        { 
-            var allLists = _repositoryForAvailableLists.GetById(default(Guid));
+        {
+            Task.Run(async() =>
+            {
+                var allLists = await _repositoryForAvailableLists.GetById(default(Guid));
 
-            if (allLists != null)
-            {
-                if (!allLists.Lists.Any(list => list == evt.ListId))
+                if (allLists != null)
                 {
-                    allLists.Lists.Add(evt.ListId);
-                    _repositoryForAvailableLists.Update(allLists);
-                }
-            }
-            else 
-            {
-                allLists = new AvailableLists
-                {
-                    Id = default(Guid),
-                    Lists = new ListId[]
+                    if (!allLists.Lists.Any(list => list == evt.ListId))
                     {
-                        evt.ListId
+                        allLists.Lists.Add(evt.ListId);
+                        await _repositoryForAvailableLists.Update(allLists);
                     }
-                };
+                }
+                else
+                {
+                    allLists = new AvailableLists
+                    {
+                        Id = default,
+                        Lists = new ListId[]
+                        {
+                        evt.ListId
+                        }
+                    };
 
-                _repositoryForAvailableLists.Insert(allLists);
-            }
+                    await _repositoryForAvailableLists.Insert(allLists);
+                }
+            });
         }
 
         [EventProcessor("25583425-CC44-4EDD-ABA5-337418EE7FB9")]
         public void Process(ListDeleted evt)
         {
-            var allLists = _repositoryForAvailableLists.GetById(default(Guid));
-
-            if (allLists != null) 
+            Task.Run(async() =>
             {
-                allLists.Lists = 
-                    allLists
+                var allLists = await _repositoryForAvailableLists.GetById(default);
+
+                if (allLists != null)
+                {
+                    allLists.Lists =
+                        allLists
                         .Lists
                         .Where(list => list != evt.ListId)
                         .ToList();
 
-                _repositoryForAvailableLists.Update(allLists);
-            }
+                    await _repositoryForAvailableLists.Update(allLists);
+                }
+            });
         }
     }
 }

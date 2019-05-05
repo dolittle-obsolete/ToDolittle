@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Concepts.TodoItem;
+using Dolittle.Logging;
 using Dolittle.Queries;
 using Dolittle.ReadModels;
 
@@ -8,27 +10,40 @@ namespace Read.TodoItem
 {
     public class GetTaskListByListId : IQueryFor<TaskList>
     {
-        readonly IReadModelRepositoryFor<TaskList> _repositoryForTaskList;
+        readonly IAsyncReadModelRepositoryFor<TaskList> _repositoryForTaskList;
+        private readonly ILogger _logger;
 
         public ListId ListId { get; set; } = ListId.None;
 
-        public GetTaskListByListId(IReadModelRepositoryFor<TaskList> repositoryForTaskList)
+        public GetTaskListByListId(IAsyncReadModelRepositoryFor<TaskList> repositoryForTaskList, ILogger logger)
         {
             _repositoryForTaskList = repositoryForTaskList;
+            _logger = logger;
         }
 
-        public IQueryable<TaskList> Query
+        public Task<IQueryable<TaskList>> Query
         {
             get
             {
-                return ListId == ListId.None 
-                    ? new TaskList[0].AsQueryable()
-                    : new [] 
+                return Task.Run(
+                    async() =>
                     {
-                        _repositoryForTaskList
-                            .Query
-                            .FirstOrDefault(readModel => readModel.Id == ListId)
-                    }.AsQueryable();
+                        Console.WriteLine($"GetTaskListByListId : {ListId}");
+                        if (ListId == ListId.None) return new TaskList[0].AsQueryable();
+
+                        var result = await _repositoryForTaskList.GetById(ListId);
+                        if (result == null)
+                        {
+                            Console.WriteLine("No tasklist found");
+                            return new TaskList[0].AsQueryable();
+                        }
+
+                        return new []
+                        {
+                            result
+                        }.AsQueryable();
+                    }
+                );
             }
         }
     }
