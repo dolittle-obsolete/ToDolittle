@@ -1,6 +1,7 @@
-# Basic
+# ToDolittle
 
-This is a very basic [Dolittle](http://www.dolittle.io) sample.
+This is a [Dolittle](http://www.dolittle.io) sample inspired by the [TodoMVC](http://todomvc.com)
+project.
 
 ## Prerequisites
 
