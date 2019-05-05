@@ -120,18 +120,22 @@ and become a browser app. Below shows an example using Chrome version 74.0.3729.
 
 Click the globe with the chain on it:
 
-![Go offline](./go_offline.png)
+![Go offline](./Images/go_offline.png)
 
 Once you've done that, after a second or two you should be prompted to install the application.
 
-![Install](./install.png)
+![Install](./Images/install.png)
 
 When installed, the application should open as a desktop application:
 
-![Offline](./offline.png)
+![Offline](./Images/offline.png)
 
 To go online with your now offline desktop app, you can simply click the globe again.
 
-![Go online](./go_online.png)
+![Go online](./Images/go_online.png)
 
 For this particular sample, going online and offline doesn't really do anything. It just shows the mechanics.
+
+If you want to switch back from having run it in WebAssembly, you can clear the entire sites data and get back to a client/server version:
+
+![Clear Site Data](./Images/clear_site_data.png)
