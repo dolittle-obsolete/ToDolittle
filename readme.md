@@ -4,13 +4,16 @@ This is a very basic [Dolittle](http://www.dolittle.io) sample.
 
 ## Prerequisites
 
-You will need to have [.NET Core](https://www.microsoft.com/net/download/core) and [NodeJS](http://nodejs.org/).
+You will need to have [.NET Core](https://www.microsoft.com/net/download/core) and
+[NodeJS](http://nodejs.org/).
 
 ## Getting started
 
-This sample has both a client/server version and a WebAssembly version. For the client/server version you'll to have
-[MongoDB](https://www.mongodb.com) instance running locally, it is assuming a non-secured instance for this. Its also
-assuming the default port of `27017` to connect to.
+This sample has both a client/server version and a WebAssembly version. All of
+the code is shared and proves a write once run many scenario. For the client/server
+version you'll to have [MongoDB](https://www.mongodb.com) instance running locally,
+it is assuming a non-secured instance for this. Its also assuming the default port
+of `27017` to connect to.
 
 To run MongoDB as a docker image, just do:
 
@@ -18,8 +21,9 @@ To run MongoDB as a docker image, just do:
 $ docker run -p 27017:27017 mongo
 ```
 
-This will give you a stateless MongoDB instance - meaning that it won't keep state around between restarts.
-You can of course mount a volume for state. Read more on [MongoDBs official Docker image](https://hub.docker.com/_/mongo/).
+This will give you a stateless MongoDB instance - meaning that it won't keep state
+around between restarts. You can of course mount a volume for state.
+Read more on [MongoDBs official Docker image](https://hub.docker.com/_/mongo/).
 
 If you're running Windows, you can also run MongoDB using [Chocolatey](https://chocolatey.org).
 
@@ -27,12 +31,13 @@ If you're running Windows, you can also run MongoDB using [Chocolatey](https://c
 c:\> choco install mongodb
 ```
 
-To run MongoDB on Windows after installing it with `Chocolatey` you need to create a data directory, the default is `c:\data\db`.
-Once this is done you can simply run the MongoDB daemon, which should be located in `c:\Program Files\MongoDB\Server\X.X\bin\mongod.exe`,
+To run MongoDB on Windows after installing it with `Chocolatey` you need to create
+a data directory, the default is `c:\data\db`.Once this is done you can simply run
+the MongoDB daemon, which should be located in `c:\Program Files\MongoDB\Server\X.X\bin\mongod.exe`,
 where X.X is the version e.g. **3.6**.
 
-Once the database server is running you can use tools like [MongoDB Compass](https://www.mongodb.com/products/compass) or [Studio 3T](https://studio3t.com)
-to connect to the server and verify everything is running.
+Once the database server is running you can use tools like [MongoDB Compass](https://www.mongodb.com/products/compass)
+or [Studio 3T](https://studio3t.com) to connect to the server and verify everything is running.
 
 Read more about the package [here](https://chocolatey.org/packages/mongodb).
 
@@ -112,6 +117,18 @@ $ dotnet watch run
 ```
 
 You can play with the commands and queries directly through Swagger by going to `http://localhost:5000/swagger`.
+
+### WebAssembly Events and Data
+
+For [Read Models](https://dolittle.io/runtime/runtime/read/read_model/), the WebAssembly solution leverages
+[Minimongo](https://github.com/mWater/minimongo) underneath the covers, which in turn uses
+[IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
+
+As an eventstore, it uses IndexedDB directly.
+
+You can find both of these databases by opening the browsers developer tools and navigate to the application tab:
+
+![View Data](./Images/data.png)
 
 ### WebAssembly - Going offline and adding to home
 
