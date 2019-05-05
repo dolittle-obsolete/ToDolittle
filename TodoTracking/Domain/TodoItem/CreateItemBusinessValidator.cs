@@ -6,6 +6,7 @@ namespace Domain.TodoItem
     public class CreateItemBusinessValidator
     : CommandBusinessValidatorFor<CreateItem>
     {
+#if(false)        
         MustNotBeATaskOnTheList _notBeATaskOnTheList;
 
         public CreateItemBusinessValidator(
@@ -23,5 +24,6 @@ namespace Domain.TodoItem
         {
             return _notBeATaskOnTheList(cmd.List, cmd.Text);
         }
+#endif        
     }
 }
