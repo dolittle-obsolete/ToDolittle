@@ -2,9 +2,22 @@
 
   <import from="behaviors/focus"></import>
 
+  <require from="./todos.scss"></require>
+
   <header class="header">
-    <h1>todos</h1>
-    <input class="new-todo" placeholder="What needs to be done?" autofocus
+    <h1>
+        <span if.bind="wasmEnabled">
+            <a if.bind="isOffline" href="#" click.delegate="goOnline()" title="Go Online"><img src="./earth2.png"></a>
+            <a else href="#" click.delegate="goOffline()" title="Go Offline"><img  src="./earth_link.png"></a>
+        </span>
+        todos
+    </h1>
+    
+    <center if.bind="loading && wasmEnabled">
+        <!-- Spinner from: https://loading.io/css/ -->
+        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </center>
+    <input else class="new-todo" placeholder="What needs to be done?" autofocus
            keyup.delegate="onKeyUp($event)"
            value.bind="newTodoTitle">
   </header>
@@ -27,6 +40,8 @@
       </li>
     </ul>
   </section>
+
+  
 
   <footer class="footer" show.bind="items.length">
     <span class="todo-count">

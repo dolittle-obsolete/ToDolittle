@@ -20,6 +20,10 @@ export class todos {
     @observable newTodoTitle = null;
     @observable areAllChecked = false;
 
+    loading = true;
+    isOffline = false;
+    wasmEnabled = false;
+
     listId;
 
     @computedFrom('items', 'filter')
@@ -42,27 +46,65 @@ export class todos {
         this.storage = storage || localStorage;
         this.commandCoordinator = commandCoordinator;
         this.queryCoordinator = queryCoordinator;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.prompt();
+        });
+
+        if (window._wasmEnabled === true) {
+            this.wasmEnabled = true;
+
+
+            navigator.serviceWorker.getRegistration().then((serviceWorker) => {
+                this.isOffline = serviceWorker ? true : false;
+            });
+
+            let before = new Date();
+            window._dolittleLoaded = () => {
+                this.loading = false;
+                let after = new Date();
+                console.log(`Total time : ${after - before}`);
+                this.totalLoadTime = after - before;
+    
+                this.loaded = false;
+    
+                setTimeout(() => this.#loadTaskList(), 100);
+            };
+    
+    
+            window._listUpdated = (list) => {
+                this.#loadTaskList();
+            };
+    
+        } 
     }
 
     activate(params) {
         this.filter = params.filter;
         // this.listId = Guid.create();
         this.listId = "9778bad6-71b3-8a63-75cf-1d72cc8fc387" //Guid.create();
+        if( !this.wasmEnabled ) {
+            this.#loadTaskList();
+        }
     }
 
     bind(bindingContext, overrideContext) {
         this.load();
+    }
+
+    #loadTaskList() {
         let queryForTaskList = new GetTaskListByListId();
         queryForTaskList.listId = this.listId;
 
         this.queryCoordinator.execute(queryForTaskList).then(queryResult => {
             console.log(queryResult);
             if (queryResult.success) {
-                const taskList = queryResult.items[0];
-                this.items = taskList.tasks.map(task => new TodoItem(task.text));
-                this.newTodoTitle = null;
+                if (queryResult.items.length > 0) {
+                    const taskList = queryResult.items[0];
+                    this.items = taskList.tasks.map(task => new TodoItem(task.text));
+                    this.newTodoTitle = null;
+                }
             }
-
         });
     }
 
@@ -78,32 +120,14 @@ export class todos {
         title = title.trim();
         if (title.length === 0) { return; }
 
-        // const newTodoItem = new TodoItem(title);
-        // this.observeItem(newTodoItem);
-        // this.items.push(newTodoItem);
-        // this.newTodoTitle = null;
-        // this.updateAreAllCheckedState();
-        // this.save();
-
         let createItem = new CreateItem();
         createItem.list = this.listId;
         createItem.text = title;
 
         this.commandCoordinator.handle(createItem).then(commandResult => {
             console.log(commandResult);
-            if (commandResult.success) {
-                let queryForTaskList = new GetTaskListByListId();
-                queryForTaskList.listId = this.listId;
-
-                this.queryCoordinator.execute(queryForTaskList).then(queryResult => {
-                    console.log(queryResult);
-                    if (queryResult.success) {
-                        const taskList = queryResult.items[0];
-                        this.items = taskList.tasks.map(task => new TodoItem(task.text));
-                        this.newTodoTitle = null;
-                    }
-
-                });
+            if (commandResult.success && !this.wasmEnabled) {
+                this.#loadTaskList();
             }
         })
 
@@ -194,5 +218,29 @@ export class todos {
         });
 
         this.storage.setItem(STORAGE_NAME, JSON.stringify(simpleItems));
+    }
+
+    goOffline() {
+        navigator.serviceWorker.register('service-worker.js').then(() => {
+            this.isOffline = true;
+        });
+    }
+
+    goOnline() {
+        caches.keys().then(names => {
+            for (let name of names)
+                caches.delete(name);
+        });
+
+
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+
+            for (let registration of registrations) {
+                registration.unregister();
+            }
+
+            this.isOffline = false;
+        });
+
     }
 }

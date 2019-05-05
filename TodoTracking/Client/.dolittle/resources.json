@@ -1,0 +1,9 @@
+{
+    "445f8ea8-1a6f-40d7-b2fc-796dba92dc44": {
+        "readModels": {
+            "database": "read_model_database_for_ToDolittle"
+        },
+        "eventStore": {
+        }
+    }
+}

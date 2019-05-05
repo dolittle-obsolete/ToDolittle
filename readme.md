@@ -8,8 +8,9 @@ You will need to have [.NET Core](https://www.microsoft.com/net/download/core) a
 
 ## Getting started
 
-The sample is configured to run against a [MongoDB](https://www.mongodb.com) instance running locally, it is assuming a non-secured
-instance for this. Its also assuming the default port of `27017` to connect to.
+This sample has both a client/server version and a WebAssembly version. For the client/server version you'll to have
+[MongoDB](https://www.mongodb.com) instance running locally, it is assuming a non-secured instance for this. Its also
+assuming the default port of `27017` to connect to.
 
 To run MongoDB as a docker image, just do:
 
@@ -37,21 +38,38 @@ Read more about the package [here](https://chocolatey.org/packages/mongodb).
 
 ## The Sample
 
+### ASP.NET Core
+
 Open the project in [Visual Studio Code](http://code.visualstudio.com/) by opening the root folder or [Visual Studio 2017](https://www.visualstudio.com/vs/) for Windows or Mac using the `TodoTracking.sln` sitting in the root.
-The `Core` project is the starting point - which hosts ASP.NET and serves as the HTTP entrypoint for the application. However, all the static Web parts representing the Single Page Application, sits inside the Web folder.
+The `Core` project is the starting point - which hosts ASP.NET and serves as backend host for the application.
+
+To get the backend running, you simply run the following from the `Core` folder:
+
+```shell
+$ dotnet run
+```
+
+### WebAssembly
+
+In addition to the `Core` project, there is a project called `Client`. This is the starting point when running it as a WebAssembly project. When running
+as a WebAssembly project, you do not need the ASP.NET Core backend running at all.
+
+You do however need to compile this project, as we will use its output in the Web frontend. Do so by running the following from the `Client` folder:
+
+```shell
+$ dotnet build
+```
+
+### Web - Frontend
+
+All the static Web parts representing the Single Page Application, sits inside the Web folder.
 Its built using [Aurelia](https://aurelia.io) using [WebPack](https://webpack.js.org) to compile and pack the files. Aurelia is not a pre-requisite, as you can use any frontend framework to build using Dolittle.
 Proxy generation is done by our [build tool](https://dolittle.io/dotnet-sdk/tooling/build_tool/) that will generate proxies for the Dolittle building blocks relevant for the frontend. These are framework agnostic JavaScript
 files. Interacting with Commands and Queries is done through the NPM packages provided; [Commands](https://www.npmjs.com/package/@dolittle/commands), [Queries](https://www.npmjs.com/package/@dolittle/queries).
 
 The simplest way to run this is to navigate to the folder containing the `bounded-context.json` (TodoTracking) and run `dolittle run`. If you have docker and are on mac or linux it should start a mongo docker, but on Windows you will have to make sure docker is running yourself (we recommend [Kitematic](https://kitematic.com/)).
 
-To run it manually you will need to restore packages for both .NET and Node, do the following from the `./Source/Core` folder:
-
-```shell
-$ dotnet restore
-```
-
-Then navigate to the `./Source/Web` folder and run either
+To run it manually you will need to restore packages for both .NET and Node, do the following from the `./Source/Web` folder:
 
 ```shell
 $ npm install
@@ -65,20 +83,55 @@ $ yarn
 
 Depending on wether or not you're using NPM or YARN.
 
-
-From a terminal from the root of the project do the following from the `./Source/Web` folder:
-
-```shell
-$ ./run.js
-```
-
-on Windows:
+From a terminal from the root of the project do the following from the `./Source/Web` folder you can run one the following commands:
 
 ```shell
-c:> node run.js
+$ yarn start
 ```
 
-This will run all the tasks and get you up and running, any editing can now be done and just saved and it will recompile / transpile / copy.
-Once it is running you can navigate to `http://localhost:5000` with your favorite browser.
+For a non-WebAssembly experience, or:
+
+```shell
+$ yarn start-wasm
+```
+
+For the WebAssembly based frontend.
+
+This will run all the tasks and get you up and running, any editing can now be done on the frontend just saved and it will transpile / copy.
+Once it is running you can navigate to `http://localhost:5000` with your favorite browser. The backend need to be built. You can
+however use the `dotnet watch` command for both the build and the run scenario (WebAssembly vs non-WebAssembly):
+
+```shell
+$ dotnet watch build
+```
+
+or
+
+```shell
+$ dotnet watch run
+```
 
 You can play with the commands and queries directly through Swagger by going to `http://localhost:5000/swagger`.
+
+### WebAssembly - Going offline and adding to home
+
+The application manifest is configured correctly and should in modern browsers give you the ability to add the application to your home screen
+and become a browser app. Below shows an example using Chrome version 74.0.3729.131.
+
+Click the globe with the chain on it:
+
+![Go offline](./go_offline.png)
+
+Once you've done that, after a second or two you should be prompted to install the application.
+
+![Install](./install.png)
+
+When installed, the application should open as a desktop application:
+
+![Offline](./offline.png)
+
+To go online with your now offline desktop app, you can simply click the globe again.
+
+![Go online](./go_online.png)
+
+For this particular sample, going online and offline doesn't really do anything. It just shows the mechanics.

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Read\Read.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dolittle.DependencyInversion" Version="2.*" />
+    <PackageReference Include="Dolittle.Interaction.WebAssembly.Interop" Version="2.*" />
+  </ItemGroup>
+
+</Project>
