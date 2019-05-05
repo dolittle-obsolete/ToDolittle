@@ -136,6 +136,10 @@ To go online with your now offline desktop app, you can simply click the globe a
 
 For this particular sample, going online and offline doesn't really do anything. It just shows the mechanics.
 
+Once installed, you can uninstall it by doing the following:
+
+![Uninstall](./Images/uninstall.png)
+
 If you want to switch back from having run it in WebAssembly, you can clear the entire sites data and get back to a client/server version:
 
 ![Clear Site Data](./Images/clear_site_data.png)
