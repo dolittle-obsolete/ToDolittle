@@ -19,7 +19,8 @@
     "webpack": "^4.26.0",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10",
-    "webpack-notifier": "^1.7.0"
+    "webpack-notifier": "^1.7.0",
+    "@dolittle/webassembly.webpack": "^1.0.0"
   },
   "dependencies": {
     "@dolittle/commands": "^1.0.10",
@@ -33,7 +34,6 @@
     "@dolittle/webassembly.interop": "^1.0.0",
     "@dolittle/webassembly.commands": "^1.0.0",
     "@dolittle/webassembly.queries": "^1.0.0",
-    "@dolittle/webassembly.aurelia": "^1.0.0",
-    "@dolittle/webassembly.webpack": "^1.0.0"
+    "@dolittle/webassembly.aurelia": "^1.0.0"
   }
 }
