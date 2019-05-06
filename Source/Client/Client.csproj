@@ -48,22 +48,19 @@
 
 
     <ItemGroup>
-        <PackageReference Include="Dolittle.SDK" Version="2.*" />
+        <PackageReference Include="Dolittle.SDK" Version="3.*" />
 
-        <PackageReference Include="Dolittle.DependencyInversion.Autofac" Version="2.*" />
+        <PackageReference Include="Dolittle.DependencyInversion.Autofac" Version="3.*" />
 
-        <PackageReference Include="Dolittle.Interaction.WebAssembly.Booting" Version="2.*" />
-        <PackageReference Include="Dolittle.Interaction.WebAssembly.Interop" Version="2.*" />
-        <PackageReference Include="Dolittle.Interaction.WebAssembly.Commands" Version="2.*" />
-        <PackageReference Include="Dolittle.Interaction.WebAssembly.Queries" Version="2.*" />
-        <PackageReference Include="Dolittle.Events.WebAssembly.Dev" Version="2.*" />
-        <PackageReference Include="Dolittle.ReadModels.MongoDB.WebAssembly" Version="2.*" />
+        <PackageReference Include="Dolittle.Interaction.WebAssembly" Version="3.*" />
+        <PackageReference Include="Dolittle.Interaction.WebAssembly.Core" Version="3.*" />
 
-        <PackageReference Include="Dolittle.Interaction.WebAssembly.Core" Version="2.*" />
+        <PackageReference Include="Dolittle.Events.WebAssembly.Dev" Version="3.*" />
+        <PackageReference Include="Dolittle.ReadModels.MongoDB.WebAssembly" Version="3.*" />
 
-        <PackageReference Include="Dolittle.Build.MSBuild" Version="2.*"/>
-        <PackageReference Include="Dolittle.SDK.Build" Version="2.*" />
-        <PackageReference Include="Dolittle.Interaction.WebAssembly.Build" Version="2.*" />
+        <PackageReference Include="Dolittle.Build.MSBuild" Version="3.*"/>
+        <PackageReference Include="Dolittle.SDK.Build" Version="3.*" />
+        <PackageReference Include="Dolittle.Interaction.WebAssembly.Build" Version="3.*" />
     </ItemGroup>
 
 </Project>

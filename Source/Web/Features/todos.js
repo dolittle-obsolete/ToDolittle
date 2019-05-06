@@ -126,7 +126,7 @@ export class todos {
 
         this.commandCoordinator.handle(createItem).then(commandResult => {
             console.log(commandResult);
-            if (commandResult.success && !this.wasmEnabled) {
+            if (commandResult.success && this.wasmEnabled==false) {
                 this.#loadTaskList();
             }
         })
