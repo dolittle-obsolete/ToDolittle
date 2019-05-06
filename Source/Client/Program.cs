@@ -20,10 +20,7 @@ namespace Client
                 .SynchronousScheduling()
                 .NoLogging()
                 //.UseLogAppender(new CustomLogAppender())
-            ).Start();
-
-            Client.Glue.Bindings.Interop = bootResult.Container.Get<IJSRuntime>();
-            Client.Glue.Bindings.Interop.Invoke("window._dolittleLoaded");
+            ).Start().Started();
         }
     }
 }

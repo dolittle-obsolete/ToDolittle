@@ -2,19 +2,18 @@
  *  Copyright (c) Dolittle. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-using Dolittle.DependencyInversion;
+using Dolittle.Booting;
 using Dolittle.Interaction.WebAssembly.Interop;
-using Read.TodoItem;
 
-namespace Client.Glue
+namespace Dolittle.Booting
 {
-    public class Bindings : ICanProvideBindings
+    public static class BootloaderResultExtension
     {
-        internal static IJSRuntime Interop;
-
-        public void Provide(IBindingProviderBuilder builder)
+        public static BootloaderResult Started(this BootloaderResult bootResult)
         {
-            builder.Bind<ListUpdated>().To(list => Interop.Invoke("window._listUpdated", list));
+            Client.Glue.Bindings.Interop = bootResult.Container.Get<IJSRuntime>();
+            Client.Glue.Bindings.Interop.Invoke("window._dolittleLoaded");
+            return bootResult;
         }
     }
 }
