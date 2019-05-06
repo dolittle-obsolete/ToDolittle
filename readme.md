@@ -3,6 +3,20 @@
 This is a [Dolittle](http://www.dolittle.io) sample inspired by the [TodoMVC](http://todomvc.com)
 project.
 
+## Cloning
+
+This repository has sub modules, clone it with:
+
+```text
+$ git clone --recursive <repository url>
+```
+
+If you've already cloned it, you can get the submodules by doing the following:
+
+```text
+$ git submodule update --init --recursive
+```
+
 ## Prerequisites
 
 You will need to have [.NET Core](https://www.microsoft.com/net/download/core) and
