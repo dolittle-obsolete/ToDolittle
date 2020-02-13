@@ -5,41 +5,51 @@ namespace Domain.TodoItem
 {
     public class ItemHandler : ICanHandleCommands
     {
-        readonly IAggregateRootRepositoryFor<TodoList>  _aggregateRootRepoForTodoList;
+        readonly IAggregateOf<TodoList>  _todoList;
 
         public ItemHandler(
-            IAggregateRootRepositoryFor<TodoList>  aggregateRootRepoForTodoList            
+            IAggregateOf<TodoList>  todoList            
         )
         {
-             _aggregateRootRepoForTodoList =  aggregateRootRepoForTodoList;
+             _todoList =  todoList;
         }
 
         public void Handle(CreateItem cmd)
         {
-            var todoList = _aggregateRootRepoForTodoList.Get(cmd.List.Value);
-
-            todoList.Add(cmd.Text);
+            _todoList
+                .Rehydrate(cmd.List.Value)
+                .Perform(_ => _.Add(cmd.Text));
+                
         }
 
         public void Handle(DeleteItem cmd)
         {
-            var todoList = _aggregateRootRepoForTodoList.Get(cmd.List.Value);
+            _todoList
+                .Rehydrate(cmd.List.Value)
+                .Perform(_ => _.Remove(cmd.Text));
+            // var todoList = _todoList.Get(cmd.List.Value);
 
-            todoList.Remove(cmd.Text);
+            // todoList.Remove(cmd.Text);
         }
 
         public void Handle(MarkItemAsDone cmd)
         {
-            var todoList = _aggregateRootRepoForTodoList.Get(cmd.List.Value);
+            _todoList
+                .Rehydrate(cmd.List.Value)
+                .Perform(_ => _.MarkAsDone(cmd.Text));
+            // var todoList = _todoList.Get(cmd.List.Value);
 
-            todoList.MarkAsDone(cmd.Text);
+            // todoList.MarkAsDone(cmd.Text);
         }
 
         public void Handle(MarkItemAsNotDone cmd)
         {
-            var todoList = _aggregateRootRepoForTodoList.Get(cmd.List.Value);
+            _todoList
+                .Rehydrate(cmd.List.Value)
+                .Perform(_ => _.MarkAsNotDone(cmd.Text));
+            // var todoList = _todoList.Get(cmd.List.Value);
 
-            todoList.MarkAsNotDone(cmd.Text);
+            // todoList.MarkAsNotDone(cmd.Text);
         }
         
     }
